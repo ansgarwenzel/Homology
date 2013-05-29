@@ -66,14 +66,14 @@ for i = 1:r;
         H = H(:,index); % exchange columns i and k
         U = U(:,index); % exchange columns i and k
       end
- for j = (p+1):n
+        for j = (p+1):n
         q = round(H(i,j)/H(i,p));
         H(:,j) = H(:,j) - q*H(:,p);
         U(:,j) = U(:,j) - q*U(:,p);
       end
       if isempty(find( H(i,(p+1):end) ~= 0) )
         FINISHED = 1;
- if H(i,p) < 0 % flip the sign of H(i,;) if necessary
+        if H(i,p) < 0 % flip the sign of H(i,;) if necessary
           H(:,p) = -H(:,p);
           U(:,p) = -U(:,p);
         end

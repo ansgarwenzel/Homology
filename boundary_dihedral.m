@@ -1,14 +1,15 @@
 function [B] = boundary_dihedral(degree,k,degenerate) %calculation of boundary matrices for dihedral quandles only.
-
-if degree < 2,
-    return;
-end
-
 if degenerate,
+    if degree < 2,
+        return;
+    end
     B1 = k*((k-1)^(degree-1));
     B2 = k*((k-1)^(degree-2));
 else
-    B1 = k^degree;
+    if degree < 1,
+        return;
+    end
+    B1 = k^(degree);
     B2 = k^(degree-1);
 end
 
@@ -63,27 +64,48 @@ for i = 1:r1, % go through rows to calculate boundary for each row. this is what
         name_vector = row_names(i,:);
         b = name_vector(j);
         name_vector(j) = [];
-        position = strmatch(name_vector,column_names);
-        if mod(j,2),
-            result_vector(position) = result_vector(position) + 1;
-        else
-            result_vector(position) = result_vector(position) - 1;
+        not_doubles = 1;
+        
+        for x=2:(r2-1),
+            if(name_vector(x)==name_vector(x-1))
+                not_doubles=0;
+            end
         end
+        
+        if not_doubles,
+            position = strmatch(name_vector,column_names);
+            if mod(j,2),
+                result_vector(position) = result_vector(position) + 1;
+            else
+                result_vector(position) = result_vector(position) - 1;
+            end
         %use up action for quandles.
+        end
         
         if (j>1),
             for l=1:(j-1),
                 name_vector(l) = up_action(name_vector(l),b,k);
             end
+        end
+        if(j<r2),
             for l=(j+1):(r2-1),
                 name_vector(l) = down_action(name_vector(l),b,k);
             end
         end
-        position = strmatch(name_vector,column_names);
-        if mod(j,2),
-            result_vector(position) = result_vector(position) - 1;
-        else
-            result_vector(position) = result_vector(position) + 1;
+        
+        not_doubles = 1;
+        for x=2:(r2-1),
+            if(name_vector(x)==name_vector(x-1))
+                not_doubles=0;
+            end
+        end
+        if not_doubles,
+            position = strmatch(name_vector,column_names);
+            if mod(j,2),
+                result_vector(position) = result_vector(position) - 1;
+            else
+                result_vector(position) = result_vector(position) + 1;
+            end
         end
     end
     B(i,:) = result_vector(:);

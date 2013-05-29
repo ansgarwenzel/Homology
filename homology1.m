@@ -1,8 +1,8 @@
 % function [Delta,k,s_minus_k] = homology1(degree,l,degenerate)
 function [] = homology1(degree,l,degenerate)
 
-F=boundary_dihedral(degree,l,degenerate);
-G=boundary_dihedral(degree-1,l,degenerate);
+F=boundary_dihedral(degree+1,l,degenerate);
+G=boundary_dihedral(degree,l,degenerate);
 [~,q1]=size(F);
 [q,~]=size(G);
 if q~=q1
@@ -38,7 +38,7 @@ Z = Z(1:q_minus_rho,:);
 
 N=round(F/Z);
 
-[~,S,~]=smith(N);
+S=smith(N);
 
 s=find_s(S,q_minus_rho);
 
@@ -54,16 +54,20 @@ for i=1:s,
     end
 end
 Delta = full(Delta);
-procent_i = '%i ';
-%space = ' ';
-display_vector =  repeat(procent_i,s);
-
-fprintf('the Matrix Delta is: \n\n');
-for i=1:s,
-    fprintf(strcat(num2str(display_vector) , ' \n' ),Delta(i,1:s));
+%display_vector =  repmat('%i ',1,s);
+other_terms = diag(Delta);
+other_terms = other_terms(((s_minus_k+1):end));
+%fprintf('the Matrix Delta is: \n\n');
+%for i=1:s,
+%    fprintf(strcat(num2str(display_vector) , ' \n' ),full(Delta(i,1:s)));
+%end
+fprintf('There are %i ones and %i other terms\n',s_minus_k,k);
+fprintf('The other terms are:\n');
+for i=1:k,
+    fprintf('%i\n',other_terms(i));
 end
-fprintf('\n');
-fprintf('And then H_%i = Z^%i + %i other terms.\n',degree,s_minus_k,k);
+%fprintf('\n');
+%fprintf('And then H_%i = Z^%i + %i other terms.\n',degree,s_minus_k,k);
 
 %return;
 end

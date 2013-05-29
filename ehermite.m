@@ -1,6 +1,6 @@
 function E = ehermite(a,b);
 
-% Elementary Hermite tranformation.
+% Elementary Hermite transformation.
 %
 % For integers a and b, E = ehermite(a,b) returns
 % an integer matrix with determinant 1 such that E * [a;b] = [g;0],
