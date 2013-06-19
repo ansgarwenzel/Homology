@@ -1,4 +1,5 @@
 library(Matrix)
+library(schoolmath)
 
 homology <- function(degree,k,degenerate){
   boundary_F <- matrix(nrow=12,ncol=6,byrow=T,data=c(1,-1,0,0,1,0,1,-1,-1,0,0,0,-1,1,1,0,0,0,-1,1,0,0,-1,0,0,0,1,-1,0,1,-1,0,1,-1,0,0,0,0,-1,1,0,-1,1,0,-1,1,0,0,0,-1,0,0,1,-1,0,0,0,1,1,-1,0,0,0,-1,-1,1,0,1,0,0,-1,1))#a matrix - Matrix(,sparse=TRUE)
@@ -12,7 +13,7 @@ homology <- function(degree,k,degenerate){
   Z <- matrix(nrow=q,ncol=q,rep.int(0,q*q))
   Z <- GX[[2]][1:(q_rho),1:(q_rho)]
   B <- find_B(boundary_F)
-  N <- B*solve(Z)
+  N <- B%*%solve(Z)
   S <- smith(N)
   Delta <- diag(S)
   s <- length(Delta)
@@ -31,6 +32,8 @@ homology <- function(degree,k,degenerate){
       break
     }
   }
+  
+  #the following is the output depending on the number of zeroes.
   if(s>l+ones){
       print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th")))," homology group of R_",k," is isomorphic to Z^",s-(k+ones)," plus the following:"))
   } else{
@@ -41,17 +44,23 @@ homology <- function(degree,k,degenerate){
   }
 }
 
-find_G_and_X <- function(G)
+find_G_and_X <- function(A)
 {
   
 }
 
-find_B <- function(M)
+find_B <- function(A)
 {
-  
+  M <- A
+  m <- nrow(A)
+  n <- ncol(A)
 }
 
 smith <- function(A)  #calculates smith form of a matrix
 {
+  m <- nrow(A)
+  n <- ncol(A)
+  
   
 }
+
