@@ -1,3 +1,6 @@
+#this is a collection of other peoples function, used for the homology calculation.
+#in particular, the Gaussian elimination is used.
+
 GaussianElimination <- function(A, B, tol=sqrt(.Machine$double.eps), 
                                 verbose=FALSE, fractions=FALSE){ 
   # A: coefficient matrix 

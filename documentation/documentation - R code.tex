@@ -1,0 +1,80 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+language=R,
+basicstyle=\scriptsize\ttfamily,
+commentstyle=\ttfamily\color{gray},
+numbers=left,
+numberstyle=\ttfamily\color{gray}\footnotesize,
+stepnumber=1,
+numbersep=5pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=2,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+title=\lstname,
+escapeinside={},
+keywordstyle={},
+morekeywords={}
+}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{The programming of the homology calculation of dihedral quandles \\ R version}
+\author{Ansgar Wenzel}
+\date{\today}                                           % Activate to display a given date or no date
+
+\begin{document}
+
+\begin{abstract}
+This paper aims to serve both as a documentation and an explanation of the implementation in R of the algorithm for the calculation of the homology of racks, quandles and their biversions as detailed in \cite{Fenn1}
+\end{abstract}
+\maketitle
+\section{Introduction}
+This paper is divided into two parts. The first chapter comprises the commented code. The second chapter explains the thinking behind the implementation, in particular where there are differences to the algorithm defined in \cite{Fenn1}. The notation does also follow the notation in the aforementioned paper. Please note that this will hopefully also be coded in C in order to a) speed up the runtime and b) lower memory usage.
+\section{The code}
+The code is organised into (currently) three different files. The first consists of two subroutines for the calculation of the Smith Normal Form and to find the matrix X. Then there is the main function to calculate the homology. The input, degree, k, degenerate, are used for dihedral quandles in particular and only used for the calculation of the boundary matrices \footnote{to do} and the subsequent output of the calculation result.
+\lstinputlisting{../R_code/homology_calculation.R}
+The second file collects two functions written by other people. In particular, the function for Gaussian Elimination is used.
+\lstinputlisting{../R_code/found_functions.R}
+The third file contains the function to calculate boundary matrices for (bi)racks and (bi)quandles based on the Switch equation and in $\mathbb{Z}_k$, in particular the dihedral quandles. The up and down actions are called in their respective functions and can easily be changed. \footnote{this is still in progress}
+\lstinputlisting{../R_code/boundary_calculations.R}
+\section{Explanation}
+The code mostly follows the algorithm as laid out in \cite{Fenn1}. There are a few differences, as follows:
+\begin{itemize}
+	\item We do calculate neither XGY nor Y itself. This is due to the fact that XGY is only used as a proxy to calculate the rank and that Y is never used again. We think it faster and more memory effective to calculate the rank directly.
+	\item We do not have XGY with D in the lower right, but rather in the top left corner. Thus, we do not use the first $q-\rho$ rows but rather the last $q-\rho$ rows.
+	\item We also use Gaussian elimination to calculate the span of the rowspace of F or Z, depending on Notation.
+	\item The N <- round(Z \%*\% ginv(B)) equation \footnote{\%*\% is matrix multiplication in R, <- is equivalent to = and ginv is the general inverse of a mxn matrix} follows by simple arithmetic.
+	\item Finally, instead of coding a Smith Normal Form Algorithm (of which there are plenty!), we use the Hermitian Normal Form function from the numbers package in R.
+\end{itemize}
+\section{Used Software}
+This programme was written in R and used the following packages:
+\begin{itemize}
+	\item R base installation, version 3.0.1 (2013-05-16) "Good Sport", \cite{Rbase}.
+	\item Matrix, \cite{Matrix}.
+	\item schoolmath, \cite{schoolmath}.
+	\item MASS, \cite{MASS}.
+	\item numbers, \cite{numbers}.
+\end{itemize}
+\begin{thebibliography}{0}
+\bibitem{Fenn1} R. Fenn, \emph{How to Calculate Homology}, 2013, unpublished.
+\bibitem{Rbase} R Core Team (2013). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL http://www.R-project.org/.
+\bibitem{Matrix} D. Bates \& M. Maechler (2013). Matrix: Sparse and Dense Matrix Classes and Methods. R package version 1.0-12. http://CRAN.R-project.org/package=Matrix.
+\bibitem{schoolmath}  J. Schlarmann \& J. Wienand (2012). schoolmath: Functions and datasets for math used in school. R package version 0.4. http://CRAN.R-project.org/package=schoolmath
+\bibitem{MASS} W. N. Venables \& B. D. Ripley (2002) Modern Applied Statistics with S. Fourth Edition. Springer, New York. ISBN 0-387-95457-0
+\bibitem{numbers} H. W. Borchers (2012). numbers: Number-theoretic Functions. R package version 0.3-3. http://CRAN.R-project.org/package=numbers
+\end{thebibliography}
+\end{document}  
