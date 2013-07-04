@@ -1,15 +1,19 @@
 #this collects all the functions necessary for the calculation of boundary matrices of (bi)quandles
 
-up_action <- function(a, b, k){
+up_actionc <- function(a, b, k){
   result <- (2 * b - a) %% k
   return(as.integer(result))
 }
 
-down_action <- function(a, b, k){
+up_action <- cmpfun(up_actionc)
+
+down_actionc <- function(a, b, k){
   return(as.integer(a))
 }
 
-boundary_names <- function(degree,k,degenerate){
+down_action <- cmpfun(down_actionc)
+
+boundary_namesc <- function(degree,k,degenerate){
   output <- t(combn(rep(0:(k-1), degree), degree))
   output <- unique(output)
   if(degenerate&&ncol(output)>1){
@@ -25,7 +29,9 @@ boundary_names <- function(degree,k,degenerate){
   return(output)
 }
 
-boundary_matrix <- function(degree, k, degenerate=FALSE){
+boundary_names <- cmpfun(boundary_namesc)
+
+boundary_matrixc <- function(degree, k, degenerate=FALSE){
   if(degenerate){
     m <- k*((k-1)^(degree-1))
     n <- k*((k-1)^(degree-2))
@@ -98,3 +104,5 @@ boundary_matrix <- function(degree, k, degenerate=FALSE){
   }
   return(M)
 }
+
+boundary_matrix <- cmpfun(boundary_matrixc)

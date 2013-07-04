@@ -1,7 +1,7 @@
 #this is a collection of other peoples function, used for the homology calculation.
 #in particular, the Gaussian elimination is used.
 
-GaussianElimination <- function(A, B, tol=sqrt(.Machine$double.eps), 
+GaussianEliminationc <- function(A, B, tol=sqrt(.Machine$double.eps), 
                                 verbose=FALSE, fractions=FALSE){ 
   # A: coefficient matrix 
   # B: right-hand side vector or matrix 
@@ -60,7 +60,9 @@ GaussianElimination <- function(A, B, tol=sqrt(.Machine$double.eps),
   if (fractions) fractions (A) else round(A, round(abs(log(tol, 10)))) 
 } 
 
-rref <- function(A, tol=sqrt(.Machine$double.eps),verbose=FALSE,
+GaussianElimination <- cmpfun(GaussianEliminationc)
+
+rrefc <- function(A, tol=sqrt(.Machine$double.eps),verbose=FALSE,
                  fractions=FALSE){
   ## A: coefficient matrix
   ## tol: tolerance for checking for 0 pivot
@@ -97,3 +99,5 @@ rref <- function(A, tol=sqrt(.Machine$double.eps),verbose=FALSE,
   if (fractions) fractions (A)
   else round(A, round(abs(log(tol,10))))
 }
+
+rref <- cmpfun(rrefc)

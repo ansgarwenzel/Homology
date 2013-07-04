@@ -1,44 +1,84 @@
 #first load the packages necessary for third-party functions.
 library(Matrix)
-library(schoolmath)
+#library(schoolmath)
 library(MASS)
 library(numbers)
+library(compiler)
+source('~/Documents/research/github/Homology/R_code/boundary_calculations.R', echo=TRUE)
+source('~/Documents/research/github/Homology/R_code/found_functions.R', echo=TRUE)
 
 #first define the subfunctions
 
 #this is used to calculate the left elementary matrix X
-findX <- function(A){
+findXc <- function(A){
   X <- diag(nrow(A))    #create Identity matrix
   G_X <- cbind(A,X)     #combine identity matrix with original matrix for Gaussian elimination
   GX_res <- GaussianElimination(G_X)  #Gaussian elimination
   X <- GX_res[, (ncol(GX_res)-nrow(A)+1):ncol(GX_res)]  #extract the left matrix, X
   return(X)
 }
+findX <- cmpfun(findXc)
+
+push_downc <- function(D){
+  for(i in 1:(length(D) - 1)){
+    a <- D[i]
+    b <- D[i + 1]
+    if(a!=1||b!=1){
+      d <- GCD(a,b)
+      if(a==0 || b==0){
+        d <- ifelse(a==0,abs(b),abs(a))
+      }
+      if(d!=0){
+        alpha <- a/d
+        D[i] <- d;
+        D[i + 1] <- -(b * alpha)
+      } else{
+        D[i] <- 0
+        D[i+1] <- 0
+      }
+    }
+  }
+  return(D)
+}
+
+push_down <- cmpfun(push_downc)
+
+check_more_pushc <- function(D){
+  for(i in 2:length(D)){
+    if(D[i] < D[i - 1]){
+      if(D[i]!=0){
+        return(TRUE)
+      } else{
+        return(FALSE)
+      }
+    } 
+  }
+  return(FALSE)
+}
+
+check_more_push <- cmpfun(check_more_pushc)
 
 #this calculates the smith normal form based on the calculation of the Hermite Normal Form.
 #In particular, HNF((HNF(A))^T)
-smith <- function(A){
-  HF <- hermiteNF(A)$H
-  S <- t(hermiteNF(t(HF))$H)
+smithc <- function(S){
+  S <- hermiteNF(S)$H
+  S <- t(hermiteNF(t(S))$H)
   D <- diag(S)
-  for(i in 1:(length(D) - 1)){
-      a <- D[i]
-      b <- D[i + 1]
-      if(a!=1||b!=1){
-        d <- gcd(a,b)
-        if(a==0 || b==0){
-          d <- ifelse(a==0,abs(b),abs(a))
-        }
-        if(d!=0){
-          alpha <- a/d
-          D[i] <- d;
-          D[i + 1] <- -(b * alpha)
-        } else{
-          D[i] <- 0
-          D[i+1] <- 0
-        }
-      }
+  D <- push_down(D) 
+  for(i in 1:length(D)){
+    D[i] <- ifelse(D[i]<0, -D[i], D[i])
+  }
+  j <- 1
+  more_push <- check_more_push(D)
+  while(more_push){
+    D <- push_down(D)
+    for(i in 1:length(D)){
+      D[i] <- ifelse(D[i]<0, -D[i], D[i])
     }
+    print(j)
+    j <- j+1
+    more_push <- check_more_push(D)
+  }
   for(i in 1:length(D)){
     D[i] <- ifelse(D[i]<0, -D[i], D[i])
   }
@@ -46,22 +86,26 @@ smith <- function(A){
   return(S)
 }
 
-i <- i+1
+smith <- cmpfun(smithc)
 
-matrix_rank <- function(A){
+matrix_rankc <- function(A){
   A <- GaussianElimination(A)
   A <- unique(A)
   return(nrow(A) - 1)
 }
 
-row_space <- function(B){
+matrix_rank <- cmpfun(matrix_rankc)
+
+row_spacec <- function(B){
   B <- t(hermiteNF(t(B))$H)
   return(B)
 }
 
+row_space <- cmpfun(row_spacec)
+
 
 #here is the main function to calculate the homology
-homology <- function(degree, k, degenerate){
+homologyc <- function(degree, k, degenerate){
   #boundary_F <- amatrix(nrow=12,ncol=6,byrow=T,data=c(1,-1,0,0,1,0,1,-1,-1,0,0,0,-1,1,1,0,0,0,-1,1,0,0,-1,0,0,0,1,-1,0,1,-1,0,1,-1,0,0,0,0,-1,1,0,-1,1,0,-1,1,0,0,0,-1,0,0,1,-1,0,0,0,1,1,-1,0,0,0,-1,-1,1,0,1,0,0,-1,1))#a matrix - Matrix(,sparse=TRUE)
   #boundary_G <- matrix(c(-1,0,1,-1,1,0,0,-1,1,1,-1,0,0,1,-1,1,0,-1),ncol=3,nrow=6,byrow=T)#another matrix
   boundary_F <- boundary_matrix(degree + 1, k, degenerate)
@@ -104,4 +148,8 @@ homology <- function(degree, k, degenerate){
   } else{
     print("0")
   }
+  return_list <- as.list(paste0("n: ",degree,", k: ",k,", number of zeros: ",s-(l+ones),", others: "),Delta[(ones+1):s])
+  return(return_list)
 }
+
+homology <- cmpfun(homologyc)
