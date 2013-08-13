@@ -48,15 +48,33 @@ check_YBc <- function(S,k,X){
 }
 check_YB <- cmpfun(check_YBc)
 
+check_fc <- function(S_X,k,X_squared){
+  A <- S_X[, 1]
+  F_A <- X_squared[, 2]
+  S <- unique(cbind(A,F_A))
+  if(nrow(S)!=k){
+    return(FALSE)
+  } else{
+    return(TRUE)
+  }
+}
+
+check_f <- cmpfun(check_fc)
+
 k <- 3#define k for Z_k (or X_k) where S lives in...
 X_squared <- all_combinations(k)
-S_X <- X_squared
+S_X <- X_squared[, 2:1]
 #here, you have to change S_X to define S
+ S_X[, 2] <- up_action(X_squared[, 1], S_X[, 1], k)
+X_squared[, 2] <- down_action(X_squared[, 1], S_X[, 1], k)
+
 
 #then, check that permutations hold:
-permutations <- check_permutations(S_X)
+permutations_S <- check_permutations(S_X)
+permutations_f <- check_f(S_X,k,X_squared)
 
-#and check that Yang-Baxter holds
+#and check that Yang-Baxter holds, based on S and f operation
 Yang_Baxter <- check_YB(S_X,k,X_squared)
 
-print(paste0("the permutations check holds ",permutations," and the Yang-Baxter check holds ",Yang_Baxter,"."))
+
+print(paste0("the permutations check holds ", permutations, " and ",permutations_f, " and the Yang-Baxter check holds ", Yang_Baxter, "."))
