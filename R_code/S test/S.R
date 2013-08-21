@@ -61,6 +61,20 @@ check_fc <- function(S_X,k,X_squared){
 
 check_f <- cmpfun(check_fc)
 
+check_gc <- function(S_X,k,X_squared){
+  S <- unique(cbind(S_X[, 1], X_squared[, 2]))
+  for(i in 0:(k-1)){
+    test_s <- matrix(S[S[, 1]==i],ncol=2,byrow=FALSE)
+    if(nrow(test_s)!=k){
+      return(FALSE)
+    }
+  }
+  return(TRUE)
+}
+
+check_g <- cmpfun(check_gc)
+
+
 k <- 3#define k for Z_k (or X_k) where S lives in...
 X_squared <- all_combinations(k)
 S_X <- X_squared[, 2:1]
@@ -72,9 +86,11 @@ X_squared[, 2] <- down_action(S_X[, 1], X_squared[, 1], k)
 #then, check that permutations hold:
 permutations_S <- check_permutations(S_X)
 permutations_f <- check_f(S_X,k,X_squared)
+permutations_g <- check_g(S_X,k,X_squared) #ignore if not a biquandle!
 
 #and check that Yang-Baxter holds, based on S and f operation
 Yang_Baxter <- check_YB(S_X,k,X_squared)
 
 
-print(paste0("the permutations check holds ", permutations_S, " and ",permutations_f, " and the Yang-Baxter check holds ", Yang_Baxter, "."))
+print(paste0("The permutation checks hold that S is ", permutations_S, ", f is ",permutations_f," and g is ", permutations_g, " and that the Yang-Baxter check holds ", Yang_Baxter, "."))
+print("Ignore the g check if not a biquandle, as it is the Identity function and therefore trivially true.")
