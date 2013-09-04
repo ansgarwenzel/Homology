@@ -154,3 +154,51 @@ homologyc <- function(degree, k, degenerate=TRUE){
 }
 
 homology <- cmpfun(homologyc)
+
+
+degenerate_homologyc <- function(degree, k){
+  boundary_F <- boundary_matrix_degenerate(degree + 1, k)
+  boundary_G <- boundary_matrix_degenerate(degree, k)
+  rho <- matrix_rank(boundary_G)  #first, this calculates the rank of the matrix G. This removes the need to calculate D and Y later.
+  q <- nrow(boundary_G)
+  r <- ncol(boundary_G)
+  q_rho <- q - rho
+  X <- findX(boundary_G)
+  Z <- X[(rho + 1):q, ]       #only take the rows that map to zero (i.e. only the boundaries)
+  B <- row_space(boundary_F)  #identify the cycles, i.e. remove the boundaries via Gaussian elimination
+  N <- round(B %*% ginv(Z)) #calculate N. Details in documentation
+  S <- smith(N)
+  Delta <- diag(S)  #Extract the values necessary for the output.
+  s <- length(Delta)
+  l <- 0
+  ones <- 0
+  output <- c()
+  for(i in 1:s){
+    if(Delta[i]==1){
+      ones <- ones + 1    #count number of ones
+    } else if(Delta[i]!=0){
+      l <- l + 1
+      output <- append(output,Delta[i])    #count and extract nonzero and non-one values in the diagonal
+    } else{
+      break
+    }
+  }
+  
+  #the following is the output depending on the number of zeroes.
+  if(s>l+ones){#check if there are any values not equal to one or zero
+    print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), " degenerate", " homology group of R_",k," is isomorphic to Z^", s-(l+ones)," plus the following:"))
+  } else{
+    print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), " degenerate", " homology group of R_",k," is isomorphic to the following:"))
+  }
+  if(l>0){ #if so, print out the resulting Z_n groups
+    for(i in 1:l){
+      print(paste0("Z_",Delta[ones+i],ifelse(i!=l," plus","")))
+    }
+  } else{
+    print("0")
+  }
+  return_list <- as.list(paste0("n: ",degree,", k: ",k,", number of zeros: ",s-(l+ones),", others: "),Delta[(ones+1):s])
+  return(return_list)
+}
+
+degenerate_homology <- cmpfun(degenerate_homologyc)
