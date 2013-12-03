@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  27 JUN 2013 14:58
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  3 DEC 2013 13:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -352,51 +352,64 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 \c@lstlisting=\count117
  (../R_code/homology_calculation.R [1{/usr/local/texlive/2012/texmf-var/fonts/m
 ap/pdftex/updmap/pdftex.map}]
-Overfull \hbox (431.514pt too wide) in paragraph at lines 27--28
-[][] 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2]
+Overfull \hbox (431.514pt too wide) in paragraph at lines 110--111
+[][][][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2])
-(../R_code/found_functions.R [3]
+ [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4])
-(../R_code/boundary_calculations.R) [5]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5]
+(../R_code/found_functions.R [6]) [7] (../R_code/boundary_calculations.R
+[8]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [9]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [10])
+[11]
 Underfull \hbox (badness 4492) in paragraph at lines 78--79
 []\OT1/cmr/m/n/9 H. W. Borchers (2012). num-bers: Number-theoretic Func-tions. 
 R pack-age ver-sion 0.3-3.
  []
 
-[6] (./documentation - R code.aux) ) 
+[12] (./documentation - R code.aux) ) 
 Here is how much of TeX's memory you used:
- 5865 strings out of 493488
- 76648 string characters out of 3141326
- 436196 words of memory out of 3000000
- 8931 multiletter control sequences out of 15000+200000
+ 5890 strings out of 493488
+ 76922 string characters out of 3141326
+ 457196 words of memory out of 3000000
+ 8956 multiletter control sequences out of 15000+200000
  12236 words of font info for 48 fonts, out of 3000000 for 9000
  1118 hyphenation exceptions out of 8191
- 42i,7n,41p,486b,2232s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/local/texlive/2012/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2012/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2012/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2012/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr6.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmr8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr9.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmti9.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmtt8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmtt9.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/s
-ymbols/msbm10.pfb>
-Output written on "documentation - R code.pdf" (6 pages, 171239 bytes).
+ 42i,7n,41p,815b,2235s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/local/texlive/2012/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2012/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2012/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2012/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr9.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmsy10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmti9.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmtt8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt9.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/
+symbols/msbm10.pfb>
+Output written on "documentation - R code.pdf" (12 pages, 200570 bytes).
 PDF statistics:
- 75 PDF objects out of 1000 (max. 8388607)
- 53 compressed objects within 1 object stream
+ 95 PDF objects out of 1000 (max. 8388607)
+ 67 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
