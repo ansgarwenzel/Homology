@@ -1,7 +1,10 @@
 #this collects all the functions necessary for the calculation of boundary matrices of (bi)quandles
 
 up_actionc <- function(a, b, k){
-  result <- (2 * b - a) %% k
+ # result <- 2 * b - a ###for dihedral quandle
+  binv <- k - b
+  result <- binv * a * b
+  result <- result %% k
   return(as.integer(result))
 }
 

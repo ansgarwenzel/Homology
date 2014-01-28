@@ -106,11 +106,11 @@ row_space <- cmpfun(row_spacec)
 
 
 #here is the main function to calculate the homology
-homologyc <- function(degree, k, degenerate=TRUE){
+homologyc <- function(degree, k, quandle=TRUE){
   #boundary_F <- matrix(nrow=12,ncol=6,byrow=T,data=c(1,-1,0,0,1,0,1,-1,-1,0,0,0,-1,1,1,0,0,0,-1,1,0,0,-1,0,0,0,1,-1,0,1,-1,0,1,-1,0,0,0,0,-1,1,0,-1,1,0,-1,1,0,0,0,-1,0,0,1,-1,0,0,0,1,1,-1,0,0,0,-1,-1,1,0,1,0,0,-1,1))#a matrix - Matrix(,sparse=TRUE)
   #boundary_G <- matrix(c(-1,0,1,-1,1,0,0,-1,1,1,-1,0,0,1,-1,1,0,-1),ncol=3,nrow=6,byrow=T)#another matrix
-  boundary_F <- boundary_matrix(degree + 1, k, degenerate)
-  boundary_G <- boundary_matrix(degree, k, degenerate)
+  boundary_F <- boundary_matrix(degree + 1, k, quandle)
+  boundary_G <- boundary_matrix(degree, k, quandle)
   rho <- matrix_rank(boundary_G)  #first, this calculates the rank of the matrix G. This removes the need to calculate D and Y later.
   q <- nrow(boundary_G)
   r <- ncol(boundary_G)
@@ -138,9 +138,9 @@ homologyc <- function(degree, k, degenerate=TRUE){
   
   #the following is the output depending on the number of zeroes.
   if(s>l+ones){#check if there are any values not equal to one or zero
-      print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(degenerate," quandle"," rack"), " homology group of R_",k," is isomorphic to Z^", s-(l+ones)," plus the following:"))
+      print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(quandle," quandle"," rack"), " homology group of R_",k," is isomorphic to Z^", s-(l+ones)," plus the following:"))
   } else{
-    print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(degenerate," quandle"," rack"), " homology group of R_",k," is isomorphic to the following:"))
+    print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(quandle," quandle"," rack"), " homology group of R_",k," is isomorphic to the following:"))
   }
   if(l>0){ #if so, print out the resulting Z_n groups
     for(i in 1:l){
