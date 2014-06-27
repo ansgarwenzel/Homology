@@ -1,20 +1,19 @@
 #first load the packages necessary for third-party functions.
 library(Matrix)
-#library(schoolmath)
+
 library(MASS)
 library(numbers)
 library(compiler)
-#source('~/Documents/research/github/Homology/R_code/boundary_calculations.R', echo=TRUE)
-#source('~/Documents/research/github/Homology/R_code/found_functions.R', echo=TRUE)
+
 
 #first define the subfunctions
 
 #this is used to calculate the left elementary matrix X
 findXc <- function(A){
-  X <- diag(nrow(A))    #create Identity matrix
-  G_X <- cbind(A,X)     #combine identity matrix with original matrix for Gaussian elimination
-  GX_res <- GaussianElimination(G_X)  #Gaussian elimination
-  X <- GX_res[, (ncol(GX_res)-nrow(A)+1):ncol(GX_res)]  #extract the left matrix, X
+  X <- diag(nrow(A)) #create Identity matrix
+  G_X <- cbind(A,X) #combine identity matrix with original matrix for Gaussian elimination
+  GX_res <- GaussianElimination(G_X) #Gaussian elimination
+  X <- GX_res[, (ncol(GX_res)-nrow(A)+1):ncol(GX_res)] #extract the left matrix, X
   return(X)
 }
 findX <- cmpfun(findXc)
@@ -51,7 +50,7 @@ check_more_pushc <- function(D){
       } else{
         return(FALSE)
       }
-    } 
+    }
   }
   return(FALSE)
 }
@@ -64,7 +63,7 @@ smithc <- function(S){
   S <- hermiteNF(S)$H
   S <- t(hermiteNF(t(S))$H)
   D <- diag(S)
-  D <- push_down(D) 
+  D <- push_down(D)
   for(i in 1:length(D)){
     D[i] <- ifelse(D[i]<0, -D[i], D[i])
   }
@@ -107,38 +106,39 @@ row_space <- cmpfun(row_spacec)
 
 #here is the main function to calculate the homology
 homologyc <- function(degree, k, quandle=TRUE){
-  #boundary_F <- matrix(nrow=12,ncol=6,byrow=T,data=c(1,-1,0,0,1,0,1,-1,-1,0,0,0,-1,1,1,0,0,0,-1,1,0,0,-1,0,0,0,1,-1,0,1,-1,0,1,-1,0,0,0,0,-1,1,0,-1,1,0,-1,1,0,0,0,-1,0,0,1,-1,0,0,0,1,1,-1,0,0,0,-1,-1,1,0,1,0,0,-1,1))#a matrix - Matrix(,sparse=TRUE)
-  #boundary_G <- matrix(c(-1,0,1,-1,1,0,0,-1,1,1,-1,0,0,1,-1,1,0,-1),ncol=3,nrow=6,byrow=T)#another matrix
   boundary_F <- boundary_matrix(degree + 1, k, quandle)
   boundary_G <- boundary_matrix(degree, k, quandle)
-  rho <- matrix_rank(boundary_G)  #first, this calculates the rank of the matrix G. This removes the need to calculate D and Y later.
+  rho <- matrix_rank(boundary_G) #first, this calculates the rank of the matrix G. This removes the need to calculate D and Y later.
   q <- nrow(boundary_G)
-  r <- ncol(boundary_G)
   q_rho <- q - rho
-  X <- findX(boundary_G)
-  Z <- X[(rho + 1):q, ]       #only take the rows that map to zero (i.e. only the boundaries)
-  B <- row_space(boundary_F)  #identify the cycles, i.e. remove the boundaries via Gaussian elimination
-  N <- round(B %*% ginv(Z)) #calculate N. Details in documentation
-  S <- smith(N)
-  Delta <- diag(S)  #Extract the values necessary for the output.
+  boundary_G <- findX(boundary_G)
+  boundary_G <- boundary_G[(rho + 1):q, ] #only take the rows that map to zero (i.e. only the boundaries)
+  boundary_F <- row_space(boundary_F) #identify the cycles, i.e. remove the boundaries via Gaussian elimination
+  boundary_G <- round(boundary_F %*% ginv(boundary_G)) #calculate N. Details in documentation
+  boundary_G <- smith(boundary_G)
+  Delta <- diag(boundary_G) #Extract the values necessary for the output.
   s <- length(Delta)
   l <- 0
   ones <- 0
   output <- c()
   for(i in 1:s){
     if(Delta[i]==1){
-      ones <- ones + 1    #count number of ones
+      ones <- ones + 1 #count number of ones
     } else if(Delta[i]!=0){
       l <- l + 1
-      output <- append(output,Delta[i])    #count and extract nonzero and non-one values in the diagonal
+      output <- append(output,Delta[i]) #count and extract nonzero and non-one values in the diagonal
     } else{
       break
     }
   }
-  
   #the following is the output depending on the number of zeroes.
+  
   if(s>l+ones){#check if there are any values not equal to one or zero
-      print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(quandle," quandle"," rack"), " homology group of R_",k," is isomorphic to Z^", s-(l+ones)," plus the following:"))
+    print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(quandle," quandle"," rack"), " homology group of R_",k," is isomorphic to Z^", s-(l+ones)," plus the following:"))
+  }
+  if(s > (l + ones)){#check if there are any values not equal to one or zero
+    print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(quandle," quandle"," rack"), " homology group of R_",k," is isomorphic to Z^", s-(l+ones)," plus the following:"))
+    
   } else{
     print(paste0("The ",degree,ifelse((degree%%10)==1,"st",ifelse((degree%%10)==2,"nd",ifelse((degree%%10)==3,"rd","th"))), ifelse(quandle," quandle"," rack"), " homology group of R_",k," is isomorphic to the following:"))
   }
@@ -149,8 +149,6 @@ homologyc <- function(degree, k, quandle=TRUE){
   } else{
     print("0")
   }
-  return_list <- as.list(paste0("n: ",degree,", k: ",k,", number of zeros: ",s-(l+ones),", others: "),Delta[(ones+1):s])
-  return(return_list)
 }
 
 homology <- cmpfun(homologyc)
@@ -159,26 +157,26 @@ homology <- cmpfun(homologyc)
 degenerate_homologyc <- function(degree, k){
   boundary_F <- boundary_matrix_degenerate(degree + 1, k)
   boundary_G <- boundary_matrix_degenerate(degree, k)
-  rho <- matrix_rank(boundary_G)  #first, this calculates the rank of the matrix G. This removes the need to calculate D and Y later.
+  rho <- matrix_rank(boundary_G) #first, this calculates the rank of the matrix G. This removes the need to calculate D and Y later.
   q <- nrow(boundary_G)
   r <- ncol(boundary_G)
   q_rho <- q - rho
   X <- findX(boundary_G)
-  Z <- X[(rho + 1):q, ]       #only take the rows that map to zero (i.e. only the boundaries)
-  B <- row_space(boundary_F)  #identify the cycles, i.e. remove the boundaries via Gaussian elimination
+  Z <- X[(rho + 1):q, ] #only take the rows that map to zero (i.e. only the boundaries)
+  B <- row_space(boundary_F) #identify the cycles, i.e. remove the boundaries via Gaussian elimination
   N <- round(B %*% ginv(Z)) #calculate N. Details in documentation
   S <- smith(N)
-  Delta <- diag(S)  #Extract the values necessary for the output.
+  Delta <- diag(S) #Extract the values necessary for the output.
   s <- length(Delta)
   l <- 0
   ones <- 0
   output <- c()
   for(i in 1:s){
     if(Delta[i]==1){
-      ones <- ones + 1    #count number of ones
+      ones <- ones + 1 #count number of ones
     } else if(Delta[i]!=0){
       l <- l + 1
-      output <- append(output,Delta[i])    #count and extract nonzero and non-one values in the diagonal
+      output <- append(output,Delta[i]) #count and extract nonzero and non-one values in the diagonal
     } else{
       break
     }
@@ -197,8 +195,6 @@ degenerate_homologyc <- function(degree, k){
   } else{
     print("0")
   }
-  return_list <- as.list(paste0("n: ",degree,", k: ",k,", number of zeros: ",s-(l+ones),", others: "),Delta[(ones+1):s])
-  return(return_list)
 }
 
 degenerate_homology <- cmpfun(degenerate_homologyc)

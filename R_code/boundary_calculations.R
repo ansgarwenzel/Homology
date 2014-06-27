@@ -1,10 +1,19 @@
 #this collects all the functions necessary for the calculation of boundary matrices of (bi)quandles
 
 up_actionc <- function(a, b, k){
- # result <- 2 * b - a ###for dihedral quandle
-  binv <- k - b
-  result <- binv * a * b
-  result <- result %% k
+  
+  #result <- 2 * b - a ###for dihedral quandle
+  #binv <- k - b
+  #result <- binv * a * b
+  #result <- result %% k
+  
+  result <- (2 * b - a) %% k ###dihedral quandle
+  #result <- sth ### alexander quandle
+  ####commutative quandle
+  #action_matrix <- rbind(c(0,0,0,0,0,0),c(1,1,5,5,2,2),c(2,5,2,1,5,1),c(3,4,4,3,4,4),c(4,3,3,3,4,3),c(5,2,1,2,1,5))
+  #result <-action_matrix[a + 1, b + 1]
+  ############
+  
   return(as.integer(result))
 }
 
@@ -24,7 +33,7 @@ boundary_namesc <- function(degree,k,degenerate){
       for(j in 2:ncol(output)){
         if(output[i, j]==output[i, j - 1]){
           output <- output[-i, ]
-          break         
+          break
         }
       }
     }
@@ -82,7 +91,7 @@ boundary_matrixc <- function(degree, k, degenerate=FALSE){
       if(j < ncol(column_names)){
         name_row[j:length(name_row)] <- down_action(name_row[j:length(name_row)], b, k)
       }
-
+      
       if(degenerate&&length(name_row) > 1){
         for(l in 2:length(name_row)){
           if(name_row[l] == name_row[l - 1]){
@@ -112,8 +121,8 @@ boundary_matrix <- cmpfun(boundary_matrixc)
 
 boundary_matrix_degeneratec <- function(degree, k){
   
-    m <- k^(degree) - k*((k-1)^(degree-1))
-    n <- k^(degree-1) - k*((k-1)^(degree-2))
+  m <- k^(degree) - k*((k-1)^(degree-1))
+  n <- k^(degree-1) - k*((k-1)^(degree-2))
   
   M <- matrix(ncol=n,nrow=m,0)
   column_names <- boundary_names_degenerate(degree - 1,k)
@@ -192,11 +201,11 @@ boundary_names_degeneratec <- function(degree,k){
     for(j in 2:ncol(output)){
       if(output[i, j]==output[i, j - 1]){
         keep <- TRUE
-        break         
+        break
       }
     }
     if(!keep){
-      output  <- output[-i, ]
+      output <- output[-i, ]
     }
   }
   return(output)

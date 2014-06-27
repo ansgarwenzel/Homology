@@ -1,1 +1,0 @@
-function [B] = add_degree(degree,k,degenerate)
